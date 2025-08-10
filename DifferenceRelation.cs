@@ -8,14 +8,14 @@ namespace Difference_Tone_Calculator
 {
     internal class DifferenceRelation
     {
-        public int Harmonic {  get; set; }
-        public int Source {  get; set; }
+        public Note From {  get; set; }
+        public Note To { get; set; }
         public int Difference { get; set; }
 
-        public DifferenceRelation(int harmonic, int source, int difference)
+        public DifferenceRelation(Note from, Note to, int difference)
         {
-            Harmonic = harmonic;
-            Source = source;
+            From = from;
+            To = to;
             Difference = difference;
         }
     }
