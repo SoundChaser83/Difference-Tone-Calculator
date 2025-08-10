@@ -14,9 +14,7 @@ foreach (string str in harmonicInput.Split(" "))
     harmonicList.Add(int.Parse(str));
 }
 
-Console.WriteLine(harmonicList.Count);
-
-Console.WriteLine("Which notes should be played? Separate note numbers by spaces.");
+Console.WriteLine("Which source notes should be played? Separate source numbers by spaces.");
 
 string noteInput = Console.ReadLine();
 noteInput = noteInput.Trim();
@@ -25,35 +23,39 @@ foreach (string str in noteInput.Split(" "))
     sourceList.Add(int.Parse(str));
 }
 
-Console.WriteLine(sourceList.Count);
-
-foreach (int source in sourceList)
-{
-    Note note = new Note(source, harmonicList);
-    noteList.Add(note);
-    Console.WriteLine($"Source: {note.Source}");
-    foreach (int mapping in note.HarmonicMappings)
-    {
-        Console.WriteLine(mapping);
+for (int i = 0; i < sourceList.Count; i++) {
+    for (int j = 0; j < harmonicList.Count; j++) {
+        Note note = new Note(sourceList[i], harmonicList[j]);
+        noteList.Add(note);
     }
-    Console.WriteLine();
 }
 
-for (int i = 0; i < sourceList.Count - 1; i++)
-{
-    for (int k = 0; k < noteList[i].HarmonicMappings.Count; k++)
-    {
-        for (int j = 0; j < noteList[i].HarmonicMappings.Count; j++)
-        {
-            differenceList.Add(new DifferenceRelation(noteList[i].HarmonicMappings[j], noteList[i].HarmonicMappings[k], Math.Abs(noteList[i].HarmonicMappings[j] - noteList[i].HarmonicMappings[k])));
+// Source = inputted root notes
+// Harmonic = inputted harmonics
+// Note = stores a source note and all mappings of it times harmonics
+// Difference = Absolute value of harmonic mapping - harmonic mapping, excludes own source note and previous source notes
+
+for (int i = 0; i < noteList.Count; i++) {
+    for (int j = i + 1; j < noteList.Count; j++) { // Start the inner loop at i + 1 to avoid duplicate comparisons
+        Note fromNote = noteList[i];
+        Note toNote = noteList[j];
+
+        if (fromNote.Source != toNote.Source) { // Ensure the sources are different
+            DifferenceRelation diff = new DifferenceRelation(
+                fromNote,
+                toNote,
+                Math.Abs(fromNote.Mapping - toNote.Mapping)
+            );
+            differenceList.Add(diff);
         }
     }
-    
-
-    
 }
 
-foreach (var difference in differenceList)
+List<DifferenceRelation> sortedDiffs = differenceList.OrderBy(diff => diff.Difference).ToList();
+
+foreach (var difference in sortedDiffs)
 {
-    Console.WriteLine($"{difference.Difference} - from: source {difference.Source}, harmonic {difference.Harmonic}");
+    Console.WriteLine($"Difference {difference.Difference} [From: source {difference.From.Source}, harmonic {difference.From.Harmonic} | To: source {difference.To.Source}, harmonic {difference.To.Harmonic}]");
 }
+
+Console.WriteLine($"\nTotal differences: {sortedDiffs.Count}");
