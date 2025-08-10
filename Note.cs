@@ -9,13 +9,7 @@ namespace Difference_Tone_Calculator
     internal class Note
     {
         public int Source {  get; set; }
-        public int Harmonic { get; set; }
         public List<int> HarmonicMappings { get; set; } = new List<int>();
-
-        public Note(int source, int harmonic) {
-            Source = source;
-            Harmonic = harmonic;
-        }
 
         public Note(int source, List<int> harmonicList)
         {
@@ -26,7 +20,5 @@ namespace Difference_Tone_Calculator
                 HarmonicMappings.Add(Source * harmonic);
             }
         }
-
-        public int Mapping => Source * Harmonic;
     }
 }
